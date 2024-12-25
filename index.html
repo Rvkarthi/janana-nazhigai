@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nazhigai Calculator</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .result-box {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <a id="reset" href="" class="btn float-end" ><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z"/>
+        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"/>
+      </svg></a>
+
+    <div class="container mt-5">
+      <h2 class="text-center">Nazhigai Calculator</h2>
+
+      <form id="calculatorForm">
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="n1" class="form-label">Janana Nazhigai</label>
+            <input type="number" id="n1" class="form-control" placeholder="Enter Nazhigai" />
+          </div>
+          <div class="col-md-4">
+            <label for="v1" class="form-label">Vinazhigai</label>
+            <input type="number" id="v1" class="form-control" placeholder="Enter Vinazhigai" />
+          </div>
+          <div class="col-md-4">
+            <label for="t1" class="form-label">Tharparai</label>
+            <input type="number" id="t1" class="form-control" placeholder="Enter Tharparai" />
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="n2" class="form-label">Raasi Iruppu</label>
+            <input type="number" id="n2" class="form-control" placeholder="Enter Nazhigai" />
+          </div>
+          <div class="col-md-4">
+            <label for="v2" class="form-label">Vinazhigai</label>
+            <input type="number" id="v2" class="form-control" placeholder="Enter Vinazhigai" />
+          </div>
+          <div class="col-md-4">
+            <label for="t2" class="form-label">Tharparai</label>
+            <input type="number" id="t2" class="form-control" placeholder="Enter Tharparai" />
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label for="raasi">Choose Raasi:</label>
+            <select id="raasi-list">
+              <option value="0">மேஷம்</option>
+              <option value="1">ரிஷபம்</option>
+              <option value="2">மிதுனம்</option>
+              <option value="3">கடகம்</option>
+              <option value="4">சிம்மம்</option>
+              <option value="5">கன்னி</option>
+              <option value="6">துலாம்</option>
+              <option value="7">விருச்சிகம்</option>
+              <option value="8">தனுசு</option>
+              <option value="9">மகரம்</option>
+              <option value="10">கும்பம்</option>
+              <option value="11">மீனம்</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-primary" onclick="calculateResult()">Calculate</button>
+          </div>
+        </div>
+      </form>
+
+      <div id="result" class="result-box text-center my-5">
+        <h3>Result:</h3>
+        <span id="resultValue">-</span>
+        <div id="verify-box" style="display: none;"></div>
+      </div>
+    </div>
+
+    <script>
+      let raasivalue = [4.33, 5.07, 5.28, 5.20, 5.03, 4.59, 5.12, 5.27, 5.20, 4.48, 4.19, 4.14];
+      let raasiname = ["மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி", "துலாம்", "விருச்சிகம்", "தனுசு", "மகரம்", "கும்பம்", "மீனம்"];
+      
+      function nazhigaiToSec(nazhigai, vinazhigai, tharparai) {
+        return nazhigai * 1440 + vinazhigai * 24 + tharparai;
+      }
+
+      function secondsToTime(seconds) {
+        const nazhigai = Math.floor(seconds / 1440); // 1 Naazhigai = 1440 seconds
+        const remainingSeconds = seconds % 1440;
+        const vinazhigai = Math.floor(remainingSeconds / 24); // 1 Vinazhigai = 24 seconds
+        const tharparai = remainingSeconds % 24; // Tharparai = 1 second
+        return { nazhigai, vinazhigai, tharparai };
+      }
+
+      function getDecimalAsInt(number) {
+        const decimalPart = number % 1; // Get the decimal part
+        return Math.round(decimalPart * 60); // Convert it to vinazhigai (e.g., 0.33 -> 20)
+      }
+
+      function calculateResult() {
+        const n1 = parseInt(document.getElementById("n1").value) || 0;
+        const v1 = parseInt(document.getElementById("v1").value) || 0;
+        const t1 = parseInt(document.getElementById("t1").value) || 0;
+        const n2 = parseInt(document.getElementById("n2").value) || 0;
+        const v2 = parseInt(document.getElementById("v2").value) || 0;
+        const t2 = parseInt(document.getElementById("t2").value) || 0;
+        const raasi = parseInt(document.getElementById("raasi-list").value) || 0;
+        const vbox = document.getElementById("verify-box");
+        
+        const totalSeconds1 = nazhigaiToSec(n1, v1, t1);
+        const totalSeconds2 = nazhigaiToSec(n2, v2, t2);
+
+        // Calculate the difference in seconds
+        let totalSeconds = totalSeconds1 - totalSeconds2;
+
+      
+        let result = secondsToTime(totalSeconds);
+        
+        let i = 1;
+        let temp = totalSeconds;
+
+        // Clear previous output
+        vbox.innerHTML = '';
+        
+        while (temp > nazhigaiToSec(Math.floor(raasivalue[(raasi + i) % 12]), (((raasivalue[(raasi + i) % 12])*100)%100), 0)) 
+        {
+            
+          const tempTime = secondsToTime(temp);
+          const timeDisplay = document.createElement('p');
+          timeDisplay.textContent = `Step ${i}: Subtracted - நாழிகை: ${tempTime.nazhigai} , விநாழிகை: ${tempTime.vinazhigai}, தர்பரை: ${tempTime.tharparai}`;
+          vbox.appendChild(timeDisplay);
+
+          temp -= nazhigaiToSec(
+            Math.floor(raasivalue[(raasi + i) % 12]),
+            (((raasivalue[(raasi + i) % 12])*100)%100),
+            0
+          );
+          
+          i++;
+        }
+        
+        // Convert the final 'temp' value (remaining time) to Naazhigai, Vinazhigai, and Tharparai
+        const tempTime = secondsToTime(temp);
+        
+        // Ensure the index wraps correctly
+        const finalRaasiIndex = (raasi + i) % 12;
+
+        const resultHTML = `
+          <h1>Perfect Janana Lagnam: ${raasiname[finalRaasiIndex]}</h1>
+          <p>நாழிகை: ${result.nazhigai}</p>
+          <p>விநாழிகை: ${result.vinazhigai}</p>
+          <p>தர்பரை: ${result.tharparai}</p>
+          <hr>
+          <h3>Remaining Time (Temp):</h3>
+          <p>நாழிகை: ${tempTime.nazhigai}</p>
+          <p>விநாழிகை: ${tempTime.vinazhigai}</p>
+          <p>தர்பரை: ${tempTime.tharparai}</p>
+        `;
+        
+        vbox.style.display = 'inline-block';
+        document.getElementById("resultValue").innerHTML = resultHTML;
+      }
+    </script>
+  </body>
+</html>
