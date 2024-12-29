@@ -26,7 +26,7 @@
       </svg></a>
 
     <div class="container mt-5">
-      <h2 class="text-center">Nazhigai Calculator</h2>
+      <h2 class="text-center">Lagna Natch Patham</h2>
 
       <form id="calculatorForm">
         <div class="row mb-3">
@@ -163,10 +163,28 @@
         // Convert the final 'temp' value (remaining time) to Naazhigai, Vinazhigai, and Tharparai
         const tempTime = secondsToTime(temp);
         
+        let x = (tempTime.nazhigai*60)+tempTime.vinazhigai;
+        
+        let a = Math.floor(raasivalue[(raasi) % 12]);
+        let b =(((raasivalue[(raasi) % 12])*100)%100);
+        var rvalue = (a*60)+b;
+        rvalue/=9;
+        
+        var k=1;
+        while(rvalue<x)
+        {
+          
+          k=k+1;
+          rvalue = (rvalue*k);
+          console.log(rvalue ,  x);
+        }
+        
+
         // Ensure the index wraps correctly
         const finalRaasiIndex = (raasi + i) % 12;
 
         const resultHTML = `
+        <h1>${"Patham : " + k}</h1>
           <h1>Perfect Janana Lagnam: ${raasiname[finalRaasiIndex]}</h1>
           <p>நாழிகை: ${result.nazhigai}</p>
           <p>விநாழிகை: ${result.vinazhigai}</p>
@@ -177,6 +195,8 @@
           <p>விநாழிகை: ${tempTime.vinazhigai}</p>
           <p>தர்பரை: ${tempTime.tharparai}</p>
         `;
+
+
         
         vbox.style.display = 'inline-block';
         document.getElementById("resultValue").innerHTML = resultHTML;
