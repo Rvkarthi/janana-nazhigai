@@ -38,10 +38,6 @@
             <label for="v1" class="form-label">Vinazhigai</label>
             <input type="number" id="v1" class="form-control" placeholder="Enter Vinazhigai" />
           </div>
-          <div class="col-md-4">
-            <label for="t1" class="form-label">Tharparai</label>
-            <input type="number" id="t1" class="form-control" placeholder="Enter Tharparai" />
-          </div>
         </div>
 
         <hr>
@@ -54,10 +50,6 @@
           <div class="col-md-4">
             <label for="v2" class="form-label">Vinazhigai</label>
             <input type="number" id="v2" class="form-control" placeholder="Enter Vinazhigai" />
-          </div>
-          <div class="col-md-4">
-            <label for="t2" class="form-label">Tharparai</label>
-            <input type="number" id="t2" class="form-control" placeholder="Enter Tharparai" />
           </div>
         </div>
 
@@ -97,103 +89,66 @@
       </div>
     </div>
 
+    
     <script>
-      let raasivalue = [4.33, 5.07, 5.28, 5.20, 5.03, 4.59, 5.12, 5.27, 5.20, 4.48, 4.19, 4.14];
-      let raasiname = ["மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி", "துலாம்", "விருச்சிகம்", "தனுசு", "மகரம்", "கும்பம்", "மீனம்"];
-      
-      function nazhigaiToSec(nazhigai, vinazhigai, tharparai) {
-        return nazhigai * 1440 + vinazhigai * 24 + tharparai;
-      }
-
-      function secondsToTime(seconds) {
-        const nazhigai = Math.floor(seconds / 1440); // 1 Naazhigai = 1440 seconds
-        const remainingSeconds = seconds % 1440;
-        const vinazhigai = Math.floor(remainingSeconds / 24); // 1 Vinazhigai = 24 seconds
-        const tharparai = remainingSeconds % 24; // Tharparai = 1 second
-        return { nazhigai, vinazhigai, tharparai };
-      }
-
-      function getDecimalAsInt(number) {
-        const decimalPart = number % 1; // Get the decimal part
-        return Math.round(decimalPart * 60); // Convert it to vinazhigai (e.g., 0.33 -> 20)
-      }
-
       function calculateResult() {
         const n1 = parseInt(document.getElementById("n1").value) || 0;
         const v1 = parseInt(document.getElementById("v1").value) || 0;
-        const t1 = parseInt(document.getElementById("t1").value) || 0;
         const n2 = parseInt(document.getElementById("n2").value) || 0;
         const v2 = parseInt(document.getElementById("v2").value) || 0;
-        const t2 = parseInt(document.getElementById("t2").value) || 0;
         const raasi = parseInt(document.getElementById("raasi-list").value) || 0;
         const vbox = document.getElementById("verify-box");
         
-        const totalSeconds1 = nazhigaiToSec(n1, v1, t1);
-        const totalSeconds2 = nazhigaiToSec(n2, v2, t2);
-
-        // Calculate the difference in seconds
-        let totalSeconds = totalSeconds1 - totalSeconds2;
-
-      
-        let result = secondsToTime(totalSeconds);
+        let janana_naligai = (n1+v1/100);
+        let raasi_irrupu = (n2+v2/100);
         
         let i = 1;
-        let temp = totalSeconds;
+        
+        let subvalue = nalSub(janana_naligai, raasi_irrupu)
 
         // Clear previous output
         vbox.innerHTML = '';
         
-        while (temp > nazhigaiToSec(Math.floor(raasivalue[(raasi + i) % 12]), (((raasivalue[(raasi + i) % 12])*100)%100), 0)) 
-        {
-            
-          const tempTime = secondsToTime(temp);
-          const timeDisplay = document.createElement('p');
-          timeDisplay.textContent = `Step ${i}: Subtracted - நாழிகை: ${tempTime.nazhigai} , விநாழிகை: ${tempTime.vinazhigai}, தர்பரை: ${tempTime.tharparai}`;
+        while (subvalue > raasivalue[(raasi + i) % 12]) 
+        {  
+          
+          
+          let timeDisplay = document.createElement('p');
+          timeDisplay.textContent = `Step ${i}: Subtracted - நாழிகை: ${parseInt(subvalue)} , விநாழிகை: ${Math.round(subvalue*100%100)}`;
           vbox.appendChild(timeDisplay);
-
-          temp -= nazhigaiToSec(
-            Math.floor(raasivalue[(raasi + i) % 12]),
-            (((raasivalue[(raasi + i) % 12])*100)%100),
-            0
-          );
+          subvalue = nalSub(subvalue,raasivalue[(raasi + i) % 12])
           
           i++;
         }
-        
-        // Convert the final 'temp' value (remaining time) to Naazhigai, Vinazhigai, and Tharparai
-        const tempTime = secondsToTime(temp);
-        
-        let x = (tempTime.nazhigai*60)+tempTime.vinazhigai;
-        
-        let a = Math.floor(raasivalue[(raasi) % 12]);
-        let b =(((raasivalue[(raasi) % 12])*100)%100);
-        var rvalue = (a*60)+b;
-        rvalue/=9;
-        
-        var k=1;
-        while(rvalue<x)
-        {
-          
-          k=k+1;
-          rvalue = (rvalue*k);
-          console.log(rvalue ,  x);
-        }
+        // final value appended
+        let timeDisplay = document.createElement('p');
+        timeDisplay.textContent = `Step ${i}: Subtracted - நாழிகை: ${parseInt(subvalue)} , விநாழிகை: ${Math.round(subvalue*100%100)}`;
+        vbox.appendChild(timeDisplay);
         
 
         // Ensure the index wraps correctly
         const finalRaasiIndex = (raasi + i) % 12;
+        let x = nalToVinal(subvalue);
 
+        var rvalue = nalToVinal(raasivalue[(finalRaasiIndex) % 12]);
+        const raasi_divBy9 = rvalue/9;
+        rvalue = rvalue/9;
+        
+        var patham=1;
+
+        while(rvalue<x)
+        {
+            
+            patham=patham+1;
+            rvalue = (raasi_divBy9*patham);
+        }
+        console.log(finalRaasiIndex);
+        //patham++;
         const resultHTML = `
-        <h1>${"Patham : " + k}</h1>
-          <h1>Perfect Janana Lagnam: ${raasiname[finalRaasiIndex]}</h1>
-          <p>நாழிகை: ${result.nazhigai}</p>
-          <p>விநாழிகை: ${result.vinazhigai}</p>
-          <p>தர்பரை: ${result.tharparai}</p>
+        <h1>${raasiNatchathiram[raasiname[finalRaasiIndex]][patham-1]} </h1>
+        <h1>Perfect Janana Lagnam: ${raasiname[finalRaasiIndex]} லக்னம் </h1>
+        <h1>${"Patham : " + patham}</h1>
           <hr>
-          <h3>Remaining Time (Temp):</h3>
-          <p>நாழிகை: ${tempTime.nazhigai}</p>
-          <p>விநாழிகை: ${tempTime.vinazhigai}</p>
-          <p>தர்பரை: ${tempTime.tharparai}</p>
         `;
 
 
@@ -201,6 +156,16 @@
         vbox.style.display = 'inline-block';
         document.getElementById("resultValue").innerHTML = resultHTML;
       }
+
+
+      
+     
+      
+
+      
     </script>
+    <script src="fun.js"></script>
+    
+    
   </body>
 </html>
