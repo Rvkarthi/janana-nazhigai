@@ -164,6 +164,25 @@
 
       
     </script>
+    <script>
+      // Function to retrieve query parameters
+      function getQueryParameter(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+  
+      // On page load
+      window.onload = () => {
+        const value = getQueryParameter('value'); // Retrieve the 'value' parameter
+  
+        if (value) {
+          // Parse it as a float and display it
+          const floatValue = parseFloat(value);
+          document.getElementById('n1').value = `${floatValue}`;
+          document.getElementById('v1').value = `${floatValue*100%100}`;
+        } 
+      };
+    </script>
     <script src="fun.js"></script>
     
     
