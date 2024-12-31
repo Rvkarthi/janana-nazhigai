@@ -178,7 +178,7 @@
         if (value) {
           // Parse it as a float and display it
           const floatValue = parseFloat(value);
-          document.getElementById('n1').value = `${floatValue}`;
+          document.getElementById('n1').value = `${parseInt(floatValue)}`;
           document.getElementById('v1').value = `${floatValue*100%100}`;
         } 
       };
